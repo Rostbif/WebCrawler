@@ -7,8 +7,10 @@ const url = require("url");
 const [, , startUrl, maxDepth] = process.argv;
 
 // If arguments weren't provided correctly, throw an error
-if (!startUrl || !maxDepth) {
-  console.error("Usage should be:  node crawler.js <url> <depth>");
+if (!startUrl || !maxDepth || maxDepth < 0) {
+  console.error(
+    "Usage should be:  node crawler.js <url> <depth>; depth should be >= 0"
+  );
   process.exit(1);
 }
 
