@@ -11,7 +11,7 @@ node [crawler.js](http://_vscodecontentref_/1) <url> <depth>
 ## Example
 
 ```sh
-node crawler.js https://www.hagavish-motors.co.il/ 3
+node crawler.js https://www.ynet.co.il/home/0,7340,L-8,00.html 1
 ```
 
 ## Dependencies
