@@ -18,11 +18,16 @@ if (!startUrl || !maxDepth || maxDepth < 0) {
 }
 
 const results = [];
+const visited = new Set();
 
 // A recursive function to crawl URL and its subpages
 async function crawl(pageUrl, depth) {
   // The recursion base case
-  if (depth > maxDepth) return;
+  // Check that we didn't reach the max depth, and that we havn't visited that site already
+  if (depth > maxDepth || visited.has(pageUrl)) return;
+
+  // Sign that url as visited
+  visited.add(pageUrl);
 
   try {
     // Using axios to fetch the HTML content of the page
@@ -65,10 +70,7 @@ async function crawl(pageUrl, depth) {
         }
       });
 
-      for (const link of links) {
-        // the recursion call to continue crawling the inner pages
-        await crawl(link, depth + 1);
-      }
+      await Promise.all(links.map((link) => crawl(link, depth + 1)));
     }
   } catch (error) {
     console.error(`Failed to crawl ${pageUrl}: ${error.message}`);
@@ -80,7 +82,10 @@ async function crawl(pageUrl, depth) {
   // Starting the crawling from index 0 (which means the given URL)
   await crawl(startUrl, 0);
   // Writing the results into the JSON file
-  fs.writeFileSync("results.json", JSON.stringify({ results }, null, 2));
+  fs.writeFileSync(
+    "resultsParallel.json",
+    JSON.stringify({ results }, null, 2)
+  );
   console.log("Crawling completed. Results were saved to results.json file!");
   console.timeEnd("Execution Time");
 })();
