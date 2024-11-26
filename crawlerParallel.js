@@ -1,6 +1,7 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const fs = require("fs");
+const { start } = require("repl");
 const url = require("url");
 
 // start the timer
@@ -78,14 +79,21 @@ async function crawl(pageUrl, depth) {
 }
 
 // Immediately invoke function to start the crawling
-(async () => {
-  // Starting the crawling from index 0 (which means the given URL)
-  await crawl(startUrl, 0);
-  // Writing the results into the JSON file
-  fs.writeFileSync(
-    "resultsParallel.json",
-    JSON.stringify({ results }, null, 2)
-  );
-  console.log("Crawling completed. Results were saved to results.json file!");
-  console.timeEnd("Execution Time");
-})();
+async function startCrawling() {
+  try {
+    // Starting the crawling from index 0 (which means the given URL)
+    await crawl(startUrl, 0);
+    // Writing the results into the JSON file
+    fs.writeFileSync(
+      "resultsParallel.json",
+      JSON.stringify({ results }, null, 2)
+    );
+    console.log("Crawling completed. Results were saved to results.json file!");
+  } catch (error) {
+    console.error(`An error occured during writing to the file: ${error}`);
+  } finally {
+    console.timeEnd("Execution Time");
+  }
+}
+
+startCrawling();
